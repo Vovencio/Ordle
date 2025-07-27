@@ -16,6 +16,7 @@
 
 ## Usage
 Download the HTML file. Open it. You're playing.
+On Mobile, it's best to click the 'Go Fullscreen' button below the game.
 
 ## Why should you pick Ordle?
 Because you deserve Wordle without the bloat, bugs, or bogus words.
