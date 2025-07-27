@@ -358,8 +358,18 @@ function drawLoss(){
   }
 }
 
+document.addEventListener('fullscreenchange', () => {
+    resizeCanvas();
+});
+
+let dpiScale = 1;
 
 function resizeCanvas() {
+    dpiScale = window.devicePixelRatio || 1;
+
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      dpiScale = Math.min(dpiScale, 1.5);
+    }
     squaresDirty = true;
 
     const windowRatio = window.innerWidth / window.innerHeight;
@@ -378,18 +388,22 @@ function resizeCanvas() {
     canvas.style.width = `${renderWidth}px`;
     canvas.style.height = `${renderHeight}px`;
 
-    canvas.width = renderWidth;
-    canvas.height = renderHeight;
+    canvas.width = renderWidth * dpiScale;
+    canvas.height = renderHeight * dpiScale;
+
+    const ctx = canvas.getContext('2d');
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(1, 1);
 
     midX = canvas.width / 2;
     midY = canvas.height / 2;
-
     squareSize = 0.176 * canvas.width;
 
     redraw();
 
     endAnimations = Date.now() + 25;
 }
+
 
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
@@ -678,12 +692,13 @@ function clickInfo(){
 window.addEventListener('load', () => {
     document.fonts.ready.then(() => {
         loadGame();
-        redraw();
+        resizeCanvas();
     });
 });
 
 function isInBox(x, y, bx, by, bw, bh) {
-    return x >= bx-2 && x <= bx + bw && y >= by-2 && y <= by + bh;
+    let sx = x * dpiScale; let sy = y * dpiScale;
+    return sx >= bx-2 && sx <= bx + bw && sy >= by-2 && sy <= by + bh;
 }
 
 canvas.addEventListener('click', onClick);
