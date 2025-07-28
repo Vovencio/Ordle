@@ -365,7 +365,7 @@ document.addEventListener('fullscreenchange', () => {
 let dpiScale = 1;
 
 function resizeCanvas() {
-    dpiScale = window.devicePixelRatio || 1;
+    dpiScale = Math.max(window.devicePixelRatio || 1, dpiScale);
 
     if (/Mobi|Android/i.test(navigator.userAgent)) {
       dpiScale = Math.min(dpiScale, 1.5);
