@@ -8,7 +8,7 @@
 - Greys out some letters based on greens to minimize brute force.
 - Handles repeated undiscovered letters with their own color.
 - Works on mobile, Firefox, Chrome.
-- Tiny ~0.6 MB!
+- Tiny ~0.2 MB!
 - One HTML file.
 - Plug and play.
 - Open source.
