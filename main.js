@@ -149,6 +149,9 @@ function updateCurrent(){
     if (playerWords.includes(currentWord.toLowerCase())){
       submit(currentWord);
     }
+    else {
+      showWordNotFoundPopup();
+    }
   }
 }
 
@@ -360,7 +363,17 @@ function drawLoss(){
 
 document.addEventListener('fullscreenchange', () => {
     resizeCanvas();
+    fs = !fs;
 });
+
+let fs = false;
+
+function isFullscreen() {
+  return document.fullscreenElement ||
+         document.webkitFullscreenElement ||
+         document.mozFullScreenElement ||
+         document.msFullscreenElement;
+}
 
 let dpiScale = 1;
 
@@ -368,7 +381,7 @@ function resizeCanvas() {
     dpiScale = Math.max(window.devicePixelRatio || 1, dpiScale);
 
     if (/Mobi|Android/i.test(navigator.userAgent)) {
-      dpiScale = Math.min(dpiScale, 1.5);
+      dpiScale = (fs) ? Math.min(dpiScale, 4) : Math.min(dpiScale, 2);
     }
     squaresDirty = true;
 
@@ -1051,6 +1064,31 @@ function spinTransition(ctx, fromImg, toImg, totalFrames = 40) {
     draw();
 }
 
+function showWordNotFoundPopup() {
+  const popup = document.getElementById("wordNotFoundPopup");
+  if (!popup) return;
+
+  const canvasWidth = canvas.clientWidth;
+  const canvasHeight = canvas.clientHeight;
+
+  const popupWidth = canvasWidth * 0.9;
+  const popupHeight = canvasHeight * 0.1;
+
+  popup.style.width = `${popupWidth}px`;
+  popup.style.height = `${popupHeight}px`;
+
+  popup.style.fontSize = `${popupWidth / 10}px`;
+
+  popup.style.top = `${canvas.offsetTop + (canvasHeight / 2) - (popupHeight / 2)}px`;
+  popup.style.left = `${canvas.offsetLeft + (canvasWidth - popupWidth) / 2}px`;
+
+  popup.style.borderRadius = `${canvasWidth / 20}px`;
+  popup.style.opacity = "1";
+
+  setTimeout(() => {
+    popup.style.opacity = "0";
+  }, 800);
+}
 
 
 
