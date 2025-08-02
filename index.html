@@ -84,38 +84,7 @@
 
     <script src="main.js"></script>
 
-    <script>
-        const btn = document.getElementById('fullscreenBtn');
-
-        function checkFullscreen() {
-          if (
-            document.fullscreenElement ||
-            document.webkitFullscreenElement ||
-            document.msFullscreenElement
-          ) {
-            btn.style.display = 'none';
-          } else {
-            btn.style.display = 'block';
-          }
-        }
-
-        btn.addEventListener('click', () => {
-          const elem = document.documentElement;
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen();
-          } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen();
-          } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen();
-          }
-        });
-
-        document.addEventListener('fullscreenchange', checkFullscreen);
-        document.addEventListener('webkitfullscreenchange', checkFullscreen);
-        document.addEventListener('msfullscreenchange', checkFullscreen);
-
-        checkFullscreen();
-    </script>
+    <script>const btn=document.getElementById("fullscreenBtn");function checkFullscreen(){document.fullscreenElement||document.webkitFullscreenElement||document.msFullscreenElement?btn.style.display="none":btn.style.display="block"}btn.addEventListener("click",(()=>{const e=document.documentElement;e.requestFullscreen?e.requestFullscreen():e.webkitRequestFullscreen?e.webkitRequestFullscreen():e.msRequestFullscreen&&e.msRequestFullscreen()})),document.addEventListener("fullscreenchange",checkFullscreen),document.addEventListener("webkitfullscreenchange",checkFullscreen),document.addEventListener("msfullscreenchange",checkFullscreen),checkFullscreen();</script>
 </body>
 
 </html>

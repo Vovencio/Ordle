@@ -73,6 +73,26 @@ function saveGame() {
     }
 }
 
+function saveLoss() {
+  const data = {
+    game: Array.from({ length: 6 }, () => Array(5).fill(' ')),
+    gameState: Array.from({ length: 6 }, () => Array(5).fill(0)),
+    score: 0,
+    highScore: highScore,
+    letterStatus: Array(26).fill(0),
+    goalWord: sysWords[Math.floor(Math.random() * sysWords.length)].word,
+    currentLine: 0,
+    lastWord: 'cheat'
+  };
+
+  try {
+    localStorage.setItem('wordGameSave', JSON.stringify(data));
+    console.log('[DEBUG] You dirty cheater.');
+  } catch (e) {
+    console.error('Failed to save game:', e);
+  }
+}
+
 function loadGame() {
     const dataStr = localStorage.getItem('wordGameSave');
 
@@ -203,9 +223,10 @@ function submit(word){
 
       animateScore(points, 75);
     }, 3500);
-    noInput = Date.now() + 3000;
+    noInput = Date.now() + 3600;
   }
   else if (currentLine === 6) {
+    saveLoss();
     lastWord = goalWord;
     setTimeout(() => {
       drawLoss();
@@ -216,10 +237,9 @@ function submit(word){
       reset();
       currentWord = '';
       newWord();
-      saveGame();
       animateScore(-score, 75);
     }, 3500);
-    noInput = Date.now() + 3000;
+    noInput = Date.now() + 3600;
   }
   else {
     filterWords();
@@ -381,7 +401,7 @@ function resizeCanvas() {
     dpiScale = Math.max(window.devicePixelRatio || 1, dpiScale);
 
     if (/Mobi|Android/i.test(navigator.userAgent)) {
-      dpiScale = (fs) ? Math.min(dpiScale, 4) : Math.min(dpiScale, 2);
+      dpiScale = (fs) ? Math.min(dpiScale, 4) : Math.min(dpiScale, 1.5);
     }
     squaresDirty = true;
 
@@ -413,6 +433,10 @@ function resizeCanvas() {
     squareSize = 0.176 * canvas.width;
 
     redraw();
+
+    setTimeout(() => {
+      redraw();
+    }, 75);
 
     endAnimations = Date.now() + 25;
 }
@@ -596,6 +620,8 @@ function drawDefinitions(definitions, x, y, w, h, max = 3) {
 function drawField(){
   drawBox(colorBG1, 0, 0, canvas.width, canvas.height);
   drawRoundedBox(colorBG2, 0, 0, canvas.width, canvas.width * 1.196, 0.176 * canvas.width / 5);
+  drawBox(colorBG2, 0, 0, canvas.width, canvas.width * 1.196 / 2, 0.176 * canvas.width / 5);
+
 
   let y = 0.02 * canvas.width;
 
@@ -684,7 +710,7 @@ function drawScore(){
   drawLetter(midX, textY + 0.03 * canvas.width, 0.05 * canvas.width, 'S: ' + score + ', HS: ' + highScore, colorScore);
 
   drawBox(colorWin, canvas.width*(1 - 0.176 - 0.02), textY + 0.01 * canvas.width, canvas.width*(0.176), 0.04 * canvas.width);
-  drawLetter(canvas.width*(1 - 0.176 - 0.02) / 2 +canvas.width*(1 - 0.02) / 2 , textY + 0.03 * canvas.width , canvas.width*(0.04), 'Learn', colorScore);
+  drawLetter(canvas.width*(1 - 0.176 - 0.02) / 2 +canvas.width*(1 - 0.02) / 2 , textY + 0.03 * canvas.width , canvas.width*(0.04), 'Learn', colorText);
 }
 
 function clickInfo(){
@@ -897,6 +923,7 @@ function drawLetterAnim(middleX, middleY, boxSize, height, letter, color = '#000
 }
 
 function drawAnimationSquare(x, y, color, symbol, t){
+  if (endAnimations > Date.now()) return;
   let currentT = Math.min(1, t);
 
   let scale = Math.abs(Math.cos(Math.PI*currentT));
@@ -906,6 +933,7 @@ function drawAnimationSquare(x, y, color, symbol, t){
 }
 
 function animateSquare(x, y, color, symbol, amountLeft) {
+  if (endAnimations > Date.now()) return;
   if (amountLeft === -1 || isInfo) return;
 
   drawAnimationSquare(x, y, color, symbol, amountLeft / 25);
@@ -913,6 +941,7 @@ function animateSquare(x, y, color, symbol, amountLeft) {
 }
 
 function animateLetterStatus(x, y, colora, colorb, symbol, amountLeft) {
+  if (endAnimations > Date.now()) return;
   if (amountLeft === -1 || isInfo) return;
 
   drawAnimationLetterStatus(x, y, colora, colorb, symbol, amountLeft / 25);
@@ -920,6 +949,7 @@ function animateLetterStatus(x, y, colora, colorb, symbol, amountLeft) {
 }
 
 function drawAnimationLetterStatus(x, y, colora, colorb, symbol, t){
+  if (endAnimations > Date.now()) return;
   let currentT = Math.min(1, t);
 
   let scale = Math.abs(Math.cos(Math.PI*currentT));
@@ -967,6 +997,7 @@ function drawRoundedBox(color, x, y, w, h, r = 10) {
 }
 
 function drawAnimationLetterPair(x, y, text, t) {
+  if (endAnimations > Date.now()) return;
   let currentT = Math.min(1, t);
   let scale = Math.abs(Math.cos(Math.PI * (currentT)));
   let symbol = (t > 0.5) ? text[0] : text[1];
@@ -975,6 +1006,7 @@ function drawAnimationLetterPair(x, y, text, t) {
 }
 
 function animateLetterPair(x, y, text, amountLeft) {
+  if (endAnimations > Date.now()) return;
   if (amountLeft === -1 || isInfo) return;
 
   drawAnimationLetterPair(x, y, text, amountLeft / 10);
@@ -982,6 +1014,7 @@ function animateLetterPair(x, y, text, amountLeft) {
 }
 
 function drawWinThingy(x, y, text, t, colora, colorb) {
+  if (endAnimations > Date.now()) return;
   let currentT = Math.min(1, t);
   let scale = Math.abs(Math.cos(Math.PI * (currentT)));
   let symbol = (t > 0.5) ? text[0] : text[1];
@@ -991,6 +1024,7 @@ function drawWinThingy(x, y, text, t, colora, colorb) {
 }
 
 function animateWinThingy(x, y, text, colora, colorb, amountLeft, slow = false) {
+  if (endAnimations > Date.now()) return;
   if (amountLeft < 0 || isInfo) return;
 
   let t = (slow) ? amountLeft / 40 : amountLeft / 10;
@@ -1000,6 +1034,7 @@ function animateWinThingy(x, y, text, colora, colorb, amountLeft, slow = false) 
 }
 
 function drawInfoThingy(x, y, text, t, colora, colorb) {
+  if (endAnimations > Date.now()) return;
   let currentT = Math.min(1, t);
   let scale = Math.abs(Math.cos(Math.PI * (currentT)));
   let symbol = (t > 0.5) ? text[0] : text[1];
@@ -1009,6 +1044,7 @@ function drawInfoThingy(x, y, text, t, colora, colorb) {
 }
 
 function animateInfoThingy(x, y, text, colora, colorb, amountLeft, slow = true) {
+  if (endAnimations > Date.now()) return;
   if (amountLeft < 0 || !isInfo) return;
 
   let t = (slow) ? amountLeft / 40 : amountLeft / 10;
@@ -1057,6 +1093,7 @@ function spinTransition(ctx, fromImg, toImg, totalFrames = 40) {
         if (frame <= totalFrames) {
             requestAnimationFrame(draw);
         } else {
+            endAnimations = 0;
             redraw(); // do not remove this!
         }
     }
