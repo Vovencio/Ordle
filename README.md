@@ -15,8 +15,12 @@
 - You can play offline.
 
 ## Usage
-Download the "ordle.html" file from the [Releases](https://github.com/Vovencio/Ordle/releases) tab. Open it. You're playing.
+### On Mobile
 On Mobile, you must click the 'Go Fullscreen' button below the game for an optimal experience.
+### Online
+Just click [this link](https://vovencio.github.io/Ordle/).
+### Offline
+Download the "ordle.html" file from the [Releases](https://github.com/Vovencio/Ordle/releases) tab. Open it with your browser of choice.
 
 ## Why should you pick Ordle?
 Because you deserve Wordle without the bloat, bugs, or bogus words.
