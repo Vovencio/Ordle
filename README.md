@@ -8,6 +8,7 @@ Ordle was built as a technical challenge: deliver a fully featured word game: fi
 
 ## Features
 
+- **Compressed data**: to decrease the file size all data is compressed with LZ-String.
 - **Curated word list**: only real, common English words; no random letter strings
 - **Word definitions**: look up any word in the `INFOS` tab after each round
 - **Smart letter hints**: letters are greyed out based on confirmed positions to reduce guesswork
